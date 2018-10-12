@@ -36,12 +36,12 @@ public class PizzaDeliveryController {
 	public void updateOrderStatus(Order aOrder){
 		if(aOrder.getStatus()==OrderStatus.InProcess){
 			aOrder.setStatus(OrderStatus.Delivered);
-			this.removeOrder(aOrder);	// When the status changes to "delivered", the order will be removed
 			for(Pizza p:aOrder.getPizzas()){
 				if(p instanceof CustomPizza){
-					p.delete();			// Also delete the custom pizza created
+					this.removeCustomPizza((CustomPizza)p);			// Also delete the custom pizza created
 				}
 			}
+			this.removeOrder(aOrder);	// When the status changes to "delivered", the order will be removed
 		}
 		aOrder.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
@@ -109,4 +109,22 @@ public class PizzaDeliveryController {
 		new CustomPizza(price,PizzaDeliveryManager.getInstance(),ingredients);
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
+	
+	public void removeCustomPizza(CustomPizza aCustomPizza){
+		aCustomPizza.delete();
+		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+	}
+	
+	public void updateCustomPizza(CustomPizza aCustomPizza, Ingredient...ingredients){
+		double price=BASE_PRICE;
+		for(Ingredient i:ingredients){
+			price+=i.getPrice();
+		}
+		aCustomPizza.setIngredients(ingredients);
+		aCustomPizza.setPrice(price);
+		aCustomPizza.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
+		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+	}
+	
 }
+
