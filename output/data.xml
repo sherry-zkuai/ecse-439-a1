@@ -1,5 +1,21 @@
 <manager id="1">
   <pizzas id="2"/>
-  <ingredients id="3"/>
-  <orders id="4"/>
+  <ingredients id="3">
+    <ingredient id="4">
+      <name>Eggplant</name>
+      <price>999.0</price>
+      <pizzaDeliveryManager reference="1"/>
+    </ingredient>
+    <ingredient id="5">
+      <name>Spaghet</name>
+      <price>222.0</price>
+      <pizzaDeliveryManager reference="1"/>
+    </ingredient>
+    <ingredient id="6">
+      <name>peps</name>
+      <price>0.111</price>
+      <pizzaDeliveryManager reference="1"/>
+    </ingredient>
+  </ingredients>
+  <orders id="7"/>
 </manager>
