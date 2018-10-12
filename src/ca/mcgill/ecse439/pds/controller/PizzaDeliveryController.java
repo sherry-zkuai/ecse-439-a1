@@ -12,13 +12,12 @@ import ca.mcgill.ecse439.pds.model.Pizza;
 import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
 public class PizzaDeliveryController {
-	
-	public PizzaDeliveryController () 
-	{
+
+	public PizzaDeliveryController() {
 	}
-	
-	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas) throws InvalidInputException
-	{
+
+	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas)
+			throws InvalidInputException {
 		new Order(name, phoneNumber, email, address, PizzaDeliveryManager.getInstance(), pizzas);
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}

@@ -1,5 +1,7 @@
 package ca.mcgill.ecse439.pds.persistence;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 import ca.mcgill.ecse439.pds.model.CustomPizza;
@@ -10,8 +12,8 @@ import ca.mcgill.ecse439.pds.model.Pizza;
 import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
 public class PizzaDeliveryPersistence {
-
-    private static String filename = "data.xml";
+	
+	private static String filename = "output/data.xml";
 	
 	private static void initializeXStream() {
 		PersistenceXStream.setFilename(filename);
@@ -19,11 +21,23 @@ public class PizzaDeliveryPersistence {
 		PersistenceXStream.setAlias("ingredient", Ingredient.class);
 		PersistenceXStream.setAlias("menu_pizza", MenuPizza.class);
 		PersistenceXStream.setAlias("order", Order.class);
-		PersistenceXStream.setAlias("pizza", Pizza.class);						// TODO: Maybe unnecessary...
+		PersistenceXStream.setAlias("pizza", Pizza.class); // TODO: Maybe unnecessary...
 		PersistenceXStream.setAlias("manager", PizzaDeliveryManager.class);
+		
+		// If the model exists, load it; if not, create it
+		File file = new File(filename);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+		}
 	}
 
-	public static void loadEventRegistrationModel() {
+	public static void loadPizzaDeliveryModel() {
 		PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
 		PizzaDeliveryPersistence.initializeXStream();
 		PizzaDeliveryManager pdm2 = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
