@@ -52,7 +52,7 @@ public class PizzaDeliveryPersistence {
 		}
 	}
 
-	public static void loadEventRegistrationModel() {
+	public static void loadPizzaDeliveryModel() {
 		//PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
 		PizzaDeliveryPersistence.initializeXStream();
 //		PizzaDeliveryManager pdm = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
