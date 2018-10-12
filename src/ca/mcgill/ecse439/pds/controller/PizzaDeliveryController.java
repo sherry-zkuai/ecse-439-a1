@@ -3,6 +3,7 @@ package ca.mcgill.ecse439.pds.controller;
 import ca.mcgill.ecse439.pds.persistence.PersistenceXStream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ca.mcgill.ecse439.pds.model.CustomPizza;
 import ca.mcgill.ecse439.pds.model.Ingredient;
@@ -13,12 +14,14 @@ import ca.mcgill.ecse439.pds.model.Pizza;
 import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
 public class PizzaDeliveryController {
-
-	public PizzaDeliveryController() {
+	
+	final double BASE_PRICE=3.00;
+	
+	public PizzaDeliveryController () 
+	{
 	}
 	
 	// Modify Order
-
 	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas)
 			throws InvalidInputException {
 		new Order(name, phoneNumber, email, address, PizzaDeliveryManager.getInstance(), pizzas);
@@ -34,6 +37,11 @@ public class PizzaDeliveryController {
 		if(aOrder.getStatus()==OrderStatus.InProcess){
 			aOrder.setStatus(OrderStatus.Delivered);
 			this.removeOrder(aOrder);	// When the status changes to "delivered", the order will be removed
+			for(Pizza p:aOrder.getPizzas()){
+				if(p instanceof CustomPizza){
+					p.delete();			// Also delete the custom pizza created
+				}
+			}
 		}
 		aOrder.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
@@ -55,7 +63,7 @@ public class PizzaDeliveryController {
 	}
 	
 	// Modify Ingredient
-	public void createIngredient (String aName, Double aPrice) throws InvalidInputException{
+	public void createIngredient (String aName, double aPrice) throws InvalidInputException{
 		new Ingredient(aName, aPrice, PizzaDeliveryManager.getInstance());
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
@@ -65,7 +73,7 @@ public class PizzaDeliveryController {
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
-	public void updateIngredient (Ingredient aIngredient, String aName, Double aPrice) throws InvalidInputException{
+	public void updateIngredient (Ingredient aIngredient, String aName, double aPrice) throws InvalidInputException{
 		aIngredient.setName(aName);
 		aIngredient.setPrice(aPrice);
 		aIngredient.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
@@ -73,7 +81,7 @@ public class PizzaDeliveryController {
 	}
 	
 	// Modify MenuPizza
-	public void createMenuPizza(String aName, Double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
+	public void createMenuPizza(String aName, double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
 		new MenuPizza(aPrice, PizzaDeliveryManager.getInstance(), aName, aCalorieCount, ingredients);
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
@@ -83,12 +91,22 @@ public class PizzaDeliveryController {
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
-	public void updateMenuPizza(MenuPizza aMenuPizza, String aName, Double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
+	public void updateMenuPizza(MenuPizza aMenuPizza, String aName, double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
 		aMenuPizza.setCalorieCount(aCalorieCount);
 		aMenuPizza.setIngredients(ingredients);
 		aMenuPizza.setName(aName);
 		aMenuPizza.setPrice(aPrice);
 		aMenuPizza.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
+		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+	}
+	
+	// Modify CustomPizza
+	public void createCustomPizza(Ingredient... ingredients){
+		double price=BASE_PRICE;
+		for(Ingredient i:ingredients){
+			price+=i.getPrice();
+		}
+		new CustomPizza(price,PizzaDeliveryManager.getInstance(),ingredients);
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 }
