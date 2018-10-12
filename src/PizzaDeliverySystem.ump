@@ -4,8 +4,8 @@ class PizzaDeliveryManager
 {
 	singleton;
 	
-	1 <@>- * Pizza pizzas;
-	1 <@>- * Ingredient ingredients;
+	1 <@>- 1..* Pizza pizzas;
+	1 <@>- 1..* Ingredient ingredients;
 	1 <@>- * Order orders;
 }
 
@@ -41,11 +41,12 @@ class MenuPizza
 class CustomPizza
 {
 	isA Pizza;
+	const Double BASE_PRICE=3.0;
 }
 
 class Ingredient
 {
-	String name; 
+	unique String name; 
 	Double price;
 	
 	before constructor, setName {
@@ -86,9 +87,20 @@ class Order
     before constructor {
     	if((aPhoneNumber==null || aPhoneNumber.length()==0) && (aEmail==null || aEmail.length()==0))
     	{
-    		throw new RuntimeException("At least one of customer's phone number and email should be provided");
+    		throw new RuntimeException("At least one of customer's phone number and email should be provided.");
+    	}
+    }
+    
+    before setPhoneNumber{
+    	if((aPhoneNumber==null || aPhoneNumber.length()==0)&&(email==null||email.length()==0)){
+    		throw new RuntimeException("At least one of customer's phone number and email should be provided.");
+    	}
+    }
+    
+    before setEmail{
+    	if((aEmail==null || aEmail.length()==0) && (phoneNumber==null || phoneNumber.length()==0)){
+    		throw new RuntimeException("At least one of customer's phone number and email should be provided.");
     	}
     }
     	
 }
-	
