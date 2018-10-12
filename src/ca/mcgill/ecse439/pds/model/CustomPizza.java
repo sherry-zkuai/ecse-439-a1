@@ -2,32 +2,30 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse439.pds.model;
+
 import java.util.*;
 
 // line 41 "../../../../../PizzaDeliverySystem.ump"
-public class CustomPizza extends Pizza
-{
+public class CustomPizza extends Pizza {
 
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	// ------------------------
+	// MEMBER VARIABLES
+	// ------------------------
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	// ------------------------
+	// CONSTRUCTOR
+	// ------------------------
 
-  public CustomPizza(double aPrice, PizzaDeliveryManager aPizzaDeliveryManager, Ingredient... allIngredients)
-  {
-    super(aPrice, aPizzaDeliveryManager, allIngredients);
-  }
+	public CustomPizza(double aPrice, PizzaDeliveryManager aPizzaDeliveryManager, Ingredient... allIngredients) {
+		super(aPrice, aPizzaDeliveryManager, allIngredients);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	// ------------------------
+	// INTERFACE
+	// ------------------------
 
-  public void delete()
-  {
-    super.delete();
-  }
+	public void delete() {
+		super.delete();
+	}
 
 }
