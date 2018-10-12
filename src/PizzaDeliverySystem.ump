@@ -4,8 +4,8 @@ class PizzaDeliveryManager
 {
 	singleton;
 	
-	1 <@>- * Pizza pizzas;
-	1 <@>- * Ingredient ingredients;
+	1 <@>- 1..* Pizza pizzas;
+	1 <@>- 1..* Ingredient ingredients;
 	1 <@>- * Order orders;
 }
 
