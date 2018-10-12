@@ -4,7 +4,7 @@
 package ca.mcgill.ecse439.pds.model;
 import java.util.*;
 
-// line 3 "../../../../../PizzaDeliverySystem.ump"
+// line 59 "../../../../../PizzaDeliverySystem.ump"
 public class Order
 {
 
@@ -12,7 +12,13 @@ public class Order
   // ENUMERATIONS
   //------------------------
 
-  public enum Status { Pending, Cooking, Delivering, Done }
+  public enum OrderStatus { InProcess, Delivered }
+
+  //------------------------
+  // STATIC VARIABLES
+  //------------------------
+
+  private static int nextOrderId = 1;
 
   //------------------------
   // MEMBER VARIABLES
@@ -20,25 +26,58 @@ public class Order
 
   //Order Attributes
   private String customerName;
-  private Status status;
+  private String phoneNumber;
+  private String email;
+  private String address;
+  private OrderStatus status;
+
+  //Autounique Attributes
+  private int orderId;
 
   //Order Associations
-  private Address address;
   private List<Pizza> pizzas;
+  private PizzaDeliveryManager pizzaDeliveryManager;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Order(String aCustomerName, Pizza... allPizzas)
+  public Order(String aCustomerName, String aPhoneNumber, String aEmail, String aAddress, PizzaDeliveryManager aPizzaDeliveryManager, Pizza... allPizzas)
   {
+    // line 73 "../../../../../PizzaDeliverySystem.ump"
+    if(aCustomerName==null || aCustomerName.length()==0)
+        	{
+        		throw new RuntimeException("Customer name cannot be empty");
+        	}
+    // END OF UMPLE BEFORE INJECTION
+    // line 80 "../../../../../PizzaDeliverySystem.ump"
+    if(aAddress==null || aAddress.length()==0)
+        	{
+        		throw new RuntimeException("Customer address cannot be empty");
+        	}
+    // END OF UMPLE BEFORE INJECTION
+    // line 87 "../../../../../PizzaDeliverySystem.ump"
+    if((aPhoneNumber==null || aPhoneNumber.length()==0) && (aEmail==null || aEmail.length()==0))
+        	{
+        		throw new RuntimeException("At least one of customer's phone number and email should be provided");
+        	}
+    // END OF UMPLE BEFORE INJECTION
     customerName = aCustomerName;
-    status = Status.Pending;
+    phoneNumber = aPhoneNumber;
+    email = aEmail;
+    address = aAddress;
+    status = OrderStatus.InProcess;
+    orderId = nextOrderId++;
     pizzas = new ArrayList<Pizza>();
     boolean didAddPizzas = setPizzas(allPizzas);
     if (!didAddPizzas)
     {
       throw new RuntimeException("Unable to create Order, must have at least 1 pizzas");
+    }
+    boolean didAddPizzaDeliveryManager = setPizzaDeliveryManager(aPizzaDeliveryManager);
+    if (!didAddPizzaDeliveryManager)
+    {
+      throw new RuntimeException("Unable to create order due to pizzaDeliveryManager");
     }
   }
 
@@ -49,12 +88,48 @@ public class Order
   public boolean setCustomerName(String aCustomerName)
   {
     boolean wasSet = false;
+    // line 73 "../../../../../PizzaDeliverySystem.ump"
+    if(aCustomerName==null || aCustomerName.length()==0)
+        	{
+        		throw new RuntimeException("Customer name cannot be empty");
+        	}
+    // END OF UMPLE BEFORE INJECTION
     customerName = aCustomerName;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setStatus(Status aStatus)
+  public boolean setPhoneNumber(String aPhoneNumber)
+  {
+    boolean wasSet = false;
+    phoneNumber = aPhoneNumber;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setEmail(String aEmail)
+  {
+    boolean wasSet = false;
+    email = aEmail;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setAddress(String aAddress)
+  {
+    boolean wasSet = false;
+    // line 80 "../../../../../PizzaDeliverySystem.ump"
+    if(aAddress==null || aAddress.length()==0)
+        	{
+        		throw new RuntimeException("Customer address cannot be empty");
+        	}
+    // END OF UMPLE BEFORE INJECTION
+    address = aAddress;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setStatus(OrderStatus aStatus)
   {
     boolean wasSet = false;
     status = aStatus;
@@ -67,20 +142,29 @@ public class Order
     return customerName;
   }
 
-  public Status getStatus()
+  public String getPhoneNumber()
   {
-    return status;
+    return phoneNumber;
   }
-  /* Code from template association_GetOne */
-  public Address getAddress()
+
+  public String getEmail()
+  {
+    return email;
+  }
+
+  public String getAddress()
   {
     return address;
   }
 
-  public boolean hasAddress()
+  public OrderStatus getStatus()
   {
-    boolean has = address != null;
-    return has;
+    return status;
+  }
+
+  public int getOrderId()
+  {
+    return orderId;
   }
   /* Code from template association_GetMany */
   public Pizza getPizza(int index)
@@ -112,32 +196,10 @@ public class Order
     int index = pizzas.indexOf(aPizza);
     return index;
   }
-  /* Code from template association_SetOptionalOneToOne */
-  public boolean setAddress(Address aNewAddress)
+  /* Code from template association_GetOne */
+  public PizzaDeliveryManager getPizzaDeliveryManager()
   {
-    boolean wasSet = false;
-    if (address != null && !address.equals(aNewAddress) && equals(address.getOrder()))
-    {
-      //Unable to setAddress, as existing address would become an orphan
-      return wasSet;
-    }
-
-    address = aNewAddress;
-    Order anOldOrder = aNewAddress != null ? aNewAddress.getOrder() : null;
-
-    if (!this.equals(anOldOrder))
-    {
-      if (anOldOrder != null)
-      {
-        anOldOrder.address = null;
-      }
-      if (address != null)
-      {
-        address.setOrder(this);
-      }
-    }
-    wasSet = true;
-    return wasSet;
+    return pizzaDeliveryManager;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfPizzas()
@@ -227,25 +289,47 @@ public class Order
     }
     return wasAdded;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setPizzaDeliveryManager(PizzaDeliveryManager aPizzaDeliveryManager)
+  {
+    boolean wasSet = false;
+    if (aPizzaDeliveryManager == null)
+    {
+      return wasSet;
+    }
+
+    PizzaDeliveryManager existingPizzaDeliveryManager = pizzaDeliveryManager;
+    pizzaDeliveryManager = aPizzaDeliveryManager;
+    if (existingPizzaDeliveryManager != null && !existingPizzaDeliveryManager.equals(aPizzaDeliveryManager))
+    {
+      existingPizzaDeliveryManager.removeOrder(this);
+    }
+    pizzaDeliveryManager.addOrder(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
-    Address existingAddress = address;
-    address = null;
-    if (existingAddress != null)
-    {
-      existingAddress.delete();
-      existingAddress.setOrder(null);
-    }
     pizzas.clear();
+    PizzaDeliveryManager placeholderPizzaDeliveryManager = pizzaDeliveryManager;
+    this.pizzaDeliveryManager = null;
+    if(placeholderPizzaDeliveryManager != null)
+    {
+      placeholderPizzaDeliveryManager.removeOrder(this);
+    }
   }
 
 
   public String toString()
   {
     return super.toString() + "["+
-            "customerName" + ":" + getCustomerName()+ "]" + System.getProperties().getProperty("line.separator") +
+            "orderId" + ":" + getOrderId()+ "," +
+            "customerName" + ":" + getCustomerName()+ "," +
+            "phoneNumber" + ":" + getPhoneNumber()+ "," +
+            "email" + ":" + getEmail()+ "," +
+            "address" + ":" + getAddress()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "status" + "=" + (getStatus() != null ? !getStatus().equals(this)  ? getStatus().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "address = "+(getAddress()!=null?Integer.toHexString(System.identityHashCode(getAddress())):"null");
+            "  " + "pizzaDeliveryManager = "+(getPizzaDeliveryManager()!=null?Integer.toHexString(System.identityHashCode(getPizzaDeliveryManager())):"null");
   }
 }

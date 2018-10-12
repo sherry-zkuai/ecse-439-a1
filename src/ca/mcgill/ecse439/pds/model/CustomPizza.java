@@ -16,9 +16,9 @@ public class CustomPizza extends Pizza
   // CONSTRUCTOR
   //------------------------
 
-  public CustomPizza(double aPrice, Ingredient... allIngredients)
+  public CustomPizza(double aPrice, PizzaDeliveryManager aPizzaDeliveryManager, Ingredient... allIngredients)
   {
-    super(aPrice, allIngredients);
+    super(aPrice, aPizzaDeliveryManager, allIngredients);
   }
 
   //------------------------

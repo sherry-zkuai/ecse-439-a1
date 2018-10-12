@@ -4,15 +4,9 @@
 package ca.mcgill.ecse439.pds.model;
 import java.util.*;
 
-// line 28 "../../../../../PizzaDeliverySystem.ump"
+// line 12 "../../../../../PizzaDeliverySystem.ump"
 public class Pizza
 {
-
-  //------------------------
-  // STATIC VARIABLES
-  //------------------------
-
-  public static final int SIZE = 12;
 
   //------------------------
   // MEMBER VARIABLES
@@ -23,19 +17,31 @@ public class Pizza
 
   //Pizza Associations
   private List<Ingredient> ingredients;
+  private PizzaDeliveryManager pizzaDeliveryManager;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Pizza(double aPrice, Ingredient... allIngredients)
+  public Pizza(double aPrice, PizzaDeliveryManager aPizzaDeliveryManager, Ingredient... allIngredients)
   {
+    // line 19 "../../../../../PizzaDeliverySystem.ump"
+    if(allIngredients==null || allIngredients.length==0)
+    		{
+    			throw new RuntimeException("Pizza ingredients cannot be empty");
+    		}
+    // END OF UMPLE BEFORE INJECTION
     price = aPrice;
     ingredients = new ArrayList<Ingredient>();
     boolean didAddIngredients = setIngredients(allIngredients);
     if (!didAddIngredients)
     {
       throw new RuntimeException("Unable to create Pizza, must have at least 1 ingredients");
+    }
+    boolean didAddPizzaDeliveryManager = setPizzaDeliveryManager(aPizzaDeliveryManager);
+    if (!didAddPizzaDeliveryManager)
+    {
+      throw new RuntimeException("Unable to create pizza due to pizzaDeliveryManager");
     }
   }
 
@@ -85,38 +91,26 @@ public class Pizza
     int index = ingredients.indexOf(aIngredient);
     return index;
   }
-  /* Code from template association_IsNumberOfValidMethod */
-  public boolean isNumberOfIngredientsValid()
+  /* Code from template association_GetOne */
+  public PizzaDeliveryManager getPizzaDeliveryManager()
   {
-    boolean isValid = numberOfIngredients() >= minimumNumberOfIngredients();
-    return isValid;
+    return pizzaDeliveryManager;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfIngredients()
   {
     return 1;
   }
-  /* Code from template association_AddManyToManyMethod */
+  /* Code from template association_AddUnidirectionalMStar */
   public boolean addIngredient(Ingredient aIngredient)
   {
     boolean wasAdded = false;
     if (ingredients.contains(aIngredient)) { return false; }
     ingredients.add(aIngredient);
-    if (aIngredient.indexOfPizza(this) != -1)
-    {
-      wasAdded = true;
-    }
-    else
-    {
-      wasAdded = aIngredient.addPizza(this);
-      if (!wasAdded)
-      {
-        ingredients.remove(aIngredient);
-      }
-    }
+    wasAdded = true;
     return wasAdded;
   }
-  /* Code from template association_AddMStarToMany */
+
   public boolean removeIngredient(Ingredient aIngredient)
   {
     boolean wasRemoved = false;
@@ -130,23 +124,11 @@ public class Pizza
       return wasRemoved;
     }
 
-    int oldIndex = ingredients.indexOf(aIngredient);
-    ingredients.remove(oldIndex);
-    if (aIngredient.indexOfPizza(this) == -1)
-    {
-      wasRemoved = true;
-    }
-    else
-    {
-      wasRemoved = aIngredient.removePizza(this);
-      if (!wasRemoved)
-      {
-        ingredients.add(oldIndex,aIngredient);
-      }
-    }
+    ingredients.remove(aIngredient);
+    wasRemoved = true;
     return wasRemoved;
   }
-  /* Code from template association_SetMStarToMany */
+  /* Code from template association_SetUnidirectionalMStar */
   public boolean setIngredients(Ingredient... newIngredients)
   {
     boolean wasSet = false;
@@ -165,25 +147,8 @@ public class Pizza
       return wasSet;
     }
 
-    ArrayList<Ingredient> oldIngredients = new ArrayList<Ingredient>(ingredients);
     ingredients.clear();
-    for (Ingredient aNewIngredient : verifiedIngredients)
-    {
-      ingredients.add(aNewIngredient);
-      if (oldIngredients.contains(aNewIngredient))
-      {
-        oldIngredients.remove(aNewIngredient);
-      }
-      else
-      {
-        aNewIngredient.addPizza(this);
-      }
-    }
-
-    for (Ingredient anOldIngredient : oldIngredients)
-    {
-      anOldIngredient.removePizza(this);
-    }
+    ingredients.addAll(verifiedIngredients);
     wasSet = true;
     return wasSet;
   }
@@ -219,14 +184,34 @@ public class Pizza
     }
     return wasAdded;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setPizzaDeliveryManager(PizzaDeliveryManager aPizzaDeliveryManager)
+  {
+    boolean wasSet = false;
+    if (aPizzaDeliveryManager == null)
+    {
+      return wasSet;
+    }
+
+    PizzaDeliveryManager existingPizzaDeliveryManager = pizzaDeliveryManager;
+    pizzaDeliveryManager = aPizzaDeliveryManager;
+    if (existingPizzaDeliveryManager != null && !existingPizzaDeliveryManager.equals(aPizzaDeliveryManager))
+    {
+      existingPizzaDeliveryManager.removePizza(this);
+    }
+    pizzaDeliveryManager.addPizza(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
-    ArrayList<Ingredient> copyOfIngredients = new ArrayList<Ingredient>(ingredients);
     ingredients.clear();
-    for(Ingredient aIngredient : copyOfIngredients)
+    PizzaDeliveryManager placeholderPizzaDeliveryManager = pizzaDeliveryManager;
+    this.pizzaDeliveryManager = null;
+    if(placeholderPizzaDeliveryManager != null)
     {
-      aIngredient.removePizza(this);
+      placeholderPizzaDeliveryManager.removePizza(this);
     }
   }
 
@@ -234,6 +219,7 @@ public class Pizza
   public String toString()
   {
     return super.toString() + "["+
-            "price" + ":" + getPrice()+ "]";
+            "price" + ":" + getPrice()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "pizzaDeliveryManager = "+(getPizzaDeliveryManager()!=null?Integer.toHexString(System.identityHashCode(getPizzaDeliveryManager())):"null");
   }
 }

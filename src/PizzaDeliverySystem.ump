@@ -1,58 +1,94 @@
 namespace ca.mcgill.ecse439.pds.model;
 
-class Order
+class PizzaDeliveryManager
 {
-    enum Status
-    {
-        Pending,
-        Cooking,
-        Delivering,
-        Done
-    }
-    
-    customerName;
-    Status status = Status.Pending;
-  
-    1 <@>- 0..1 Address address;
-    0..* -> 1..* Pizza pizzas;
-}
-
-class Address
-{
-    firstLine;
-    secondLine;
-    city;
-    postalCode;
+	singleton;
+	
+	1 <@>- * Pizza pizzas;
+	1 <@>- * Ingredient ingredients;
+	1 <@>- * Order orders;
 }
 
 class Pizza
 {
-    Double price;
-    const Integer SIZE = 12;
+	Double price; 
+	
+	* -> 1..* Ingredient;
+	
+	before constructor {
+		if(allIngredients==null || allIngredients.length==0)
+		{
+			throw new RuntimeException("Pizza ingredients cannot be empty");
+		}
+	}
 }
 
 class MenuPizza
 {
-    isA Pizza;
-    name;
-    Integer calorieCount;
+	isA Pizza;
+	 
+	unique String name; 
+	Integer calorieCount;
+	
+	before constructor, setName {
+		if(aName==null || aName.length()==0)
+		{
+			throw new RuntimeException("Pizza name cannot be empty");
+		}
+	}
 }
 
 class CustomPizza
 {
-    isA Pizza;
+	isA Pizza;
 }
 
 class Ingredient
 {
-    unique name;
-    Double price;
-  
-    1..* -- 0..* Pizza pizzas;
+	String name; 
+	Double price;
+	
+	before constructor, setName {
+		if(aName==null || aName.length()==0)
+		{
+			throw new RuntimeException("Ingredient name cannot be empty");
+		}
+	}
 }
 
-class PizzaDeliveryManager
+class Order
 {
-	singleton;
-    1 -> * Order orders;
+	enum OrderStatus{InProcess, Delivered}
+
+    autounique orderId;
+	String customerName;
+	String phoneNumber;
+	String email;
+	String address;	
+	OrderStatus status = OrderStatus.InProcess;
+    
+    * -> 1..* Pizza;
+    
+    before constructor, setCustomerName {
+    	if(aCustomerName==null || aCustomerName.length()==0)
+    	{
+    		throw new RuntimeException("Customer name cannot be empty");
+    	}
+    }
+    
+    before constructor,setAddress {
+    	if(aAddress==null || aAddress.length()==0)
+    	{
+    		throw new RuntimeException("Customer address cannot be empty");
+    	}
+    }
+    
+    before constructor {
+    	if((aPhoneNumber==null || aPhoneNumber.length()==0) && (aEmail==null || aEmail.length()==0))
+    	{
+    		throw new RuntimeException("At least one of customer's phone number and email should be provided");
+    	}
+    }
+    	
 }
+	

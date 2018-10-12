@@ -4,9 +4,15 @@
 package ca.mcgill.ecse439.pds.model;
 import java.util.*;
 
-// line 34 "../../../../../PizzaDeliverySystem.ump"
+// line 26 "../../../../../PizzaDeliverySystem.ump"
 public class MenuPizza extends Pizza
 {
+
+  //------------------------
+  // STATIC VARIABLES
+  //------------------------
+
+  private static Map<String, MenuPizza> menupizzasByName = new HashMap<String, MenuPizza>();
 
   //------------------------
   // MEMBER VARIABLES
@@ -20,11 +26,20 @@ public class MenuPizza extends Pizza
   // CONSTRUCTOR
   //------------------------
 
-  public MenuPizza(double aPrice, String aName, int aCalorieCount, Ingredient... allIngredients)
+  public MenuPizza(double aPrice, PizzaDeliveryManager aPizzaDeliveryManager, String aName, int aCalorieCount, Ingredient... allIngredients)
   {
-    super(aPrice, allIngredients);
-    name = aName;
+    super(aPrice, aPizzaDeliveryManager, allIngredients);
+    // line 34 "../../../../../PizzaDeliverySystem.ump"
+    if(aName==null || aName.length()==0)
+    		{
+    			throw new RuntimeException("Pizza name cannot be empty");
+    		}
+    // END OF UMPLE BEFORE INJECTION
     calorieCount = aCalorieCount;
+    if (!setName(aName))
+    {
+      throw new RuntimeException("Cannot create due to duplicate name");
+    }
   }
 
   //------------------------
@@ -34,8 +49,22 @@ public class MenuPizza extends Pizza
   public boolean setName(String aName)
   {
     boolean wasSet = false;
+    // line 34 "../../../../../PizzaDeliverySystem.ump"
+    if(aName==null || aName.length()==0)
+    		{
+    			throw new RuntimeException("Pizza name cannot be empty");
+    		}
+    // END OF UMPLE BEFORE INJECTION
+    String anOldName = getName();
+    if (hasWithName(aName)) {
+      return wasSet;
+    }
     name = aName;
     wasSet = true;
+    if (anOldName != null) {
+      menupizzasByName.remove(anOldName);
+    }
+    menupizzasByName.put(aName, this);
     return wasSet;
   }
 
@@ -51,6 +80,16 @@ public class MenuPizza extends Pizza
   {
     return name;
   }
+  /* Code from template attribute_GetUnique */
+  public static MenuPizza getWithName(String aName)
+  {
+    return menupizzasByName.get(aName);
+  }
+  /* Code from template attribute_HasUnique */
+  public static boolean hasWithName(String aName)
+  {
+    return getWithName(aName) != null;
+  }
 
   public int getCalorieCount()
   {
@@ -59,6 +98,7 @@ public class MenuPizza extends Pizza
 
   public void delete()
   {
+    menupizzasByName.remove(getName());
     super.delete();
   }
 

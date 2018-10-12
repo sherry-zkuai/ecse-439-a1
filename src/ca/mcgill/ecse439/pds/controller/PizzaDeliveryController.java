@@ -4,7 +4,6 @@ import ca.mcgill.ecse439.pds.persistence.PersistenceXStream;
 
 import java.util.ArrayList;
 
-import ca.mcgill.ecse439.pds.model.Address;
 import ca.mcgill.ecse439.pds.model.CustomPizza;
 import ca.mcgill.ecse439.pds.model.Ingredient;
 import ca.mcgill.ecse439.pds.model.MenuPizza;
@@ -18,20 +17,9 @@ public class PizzaDeliveryController {
 	{
 	}
 	
-	public void createOrder(String name, Address address, Pizza[] pizzas) throws InvalidInputException
+	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas) throws InvalidInputException
 	{
-		if (name == null || name.trim().length() == 0)
-			throw new InvalidInputException("You must enter your name");
-		if (address == null)
-			throw new InvalidInputException("You must enter your address");
-		if (pizzas == null || pizzas.length < 1)
-			throw new InvalidInputException("You must order at least one pizza");
-		
-		Order o = new Order(name, pizzas);
-		o.setAddress(address);
-		
-		PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
-		pdm.addOrder(o);
-		PersistenceXStream.saveToXMLwithXStream(pdm);
+		new Order(name, phoneNumber, email, address, PizzaDeliveryManager.getInstance(), pizzas);
+		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 }

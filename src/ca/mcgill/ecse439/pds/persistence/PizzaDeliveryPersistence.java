@@ -2,7 +2,6 @@ package ca.mcgill.ecse439.pds.persistence;
 
 import java.util.Iterator;
 
-import ca.mcgill.ecse439.pds.model.Address;
 import ca.mcgill.ecse439.pds.model.CustomPizza;
 import ca.mcgill.ecse439.pds.model.Ingredient;
 import ca.mcgill.ecse439.pds.model.MenuPizza;
@@ -16,7 +15,6 @@ public class PizzaDeliveryPersistence {
 	
 	private static void initializeXStream() {
 		PersistenceXStream.setFilename(filename);
-		PersistenceXStream.setAlias("address", Address.class);
 		PersistenceXStream.setAlias("custom_pizza", CustomPizza.class);
 		PersistenceXStream.setAlias("ingredient", Ingredient.class);
 		PersistenceXStream.setAlias("menu_pizza", MenuPizza.class);
@@ -33,6 +31,12 @@ public class PizzaDeliveryPersistence {
 			Iterator<Order> oIt = pdm2.getOrders().iterator();
 			while (oIt.hasNext())
 				pdm.addOrder(oIt.next());
+			Iterator<Pizza> pIt = pdm2.getPizzas().iterator();
+			while (pIt.hasNext())
+				pdm.addPizza(pIt.next());
+			Iterator<Ingredient> iIt = pdm2.getIngredients().iterator();
+			while (iIt.hasNext())
+				pdm.addIngredient(iIt.next());
 		}
 	}
 
