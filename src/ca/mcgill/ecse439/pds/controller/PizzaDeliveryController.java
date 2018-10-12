@@ -24,7 +24,11 @@ public class PizzaDeliveryController {
 	// Modify Order
 	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas)
 			throws InvalidInputException {
-		new Order(name, phoneNumber, email, address, PizzaDeliveryManager.getInstance(), pizzas);
+		try{
+			PizzaDeliveryManager.getInstance().addOrder(name, phoneNumber, email, address, pizzas);
+		}catch (RuntimeException e){
+			throw new InvalidInputException(e.getMessage());
+		}
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
@@ -49,6 +53,9 @@ public class PizzaDeliveryController {
 	
 	public void updateOrder(Order aOrder, String aCustomerName, String aPhoneNumber, String aEmail, String aAddress,
 			OrderStatus aStatus, Pizza...newPizzas) throws InvalidInputException{
+		if(!PizzaDeliveryManager.getInstance().getOrders().contains(aOrder)){
+			throw new InvalidInputException("Order not found");
+		}
 		if((aPhoneNumber==null || aPhoneNumber.length()==0) && (aEmail==null || aEmail.length()==0)){
 			throw new InvalidInputException("At least one of customer's phone number and email should be provided.");
 		}
@@ -58,13 +65,26 @@ public class PizzaDeliveryController {
 		aOrder.setPhoneNumber(aPhoneNumber);
 		aOrder.setPizzas(newPizzas);
 		aOrder.setStatus(aStatus);
+		if(aOrder.getStatus()==OrderStatus.Delivered){
+			for(Pizza p:aOrder.getPizzas()){
+				if(p instanceof CustomPizza){
+					this.removeCustomPizza((CustomPizza)p);			// Also delete the custom pizza created
+				}
+			}
+			this.removeOrder(aOrder);
+			return;
+		}
 		aOrder.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
 	// Modify Ingredient
 	public void createIngredient (String aName, double aPrice) throws InvalidInputException{
-		new Ingredient(aName, aPrice, PizzaDeliveryManager.getInstance());
+		try{
+			PizzaDeliveryManager.getInstance().addIngredient(aName, aPrice);
+		}catch (RuntimeException e){
+			throw new InvalidInputException(e.getMessage());
+		}
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
@@ -74,6 +94,9 @@ public class PizzaDeliveryController {
 	}
 	
 	public void updateIngredient (Ingredient aIngredient, String aName, double aPrice) throws InvalidInputException{
+		if(!PizzaDeliveryManager.getInstance().getIngredients().contains(aIngredient)){
+			throw new InvalidInputException("Ingredient not found.");
+		}
 		aIngredient.setName(aName);
 		aIngredient.setPrice(aPrice);
 		aIngredient.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
@@ -82,7 +105,11 @@ public class PizzaDeliveryController {
 	
 	// Modify MenuPizza
 	public void createMenuPizza(String aName, double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
-		new MenuPizza(aPrice, PizzaDeliveryManager.getInstance(), aName, aCalorieCount, ingredients);
+		try{
+			new MenuPizza(aPrice, PizzaDeliveryManager.getInstance(), aName, aCalorieCount, ingredients);
+		}catch(RuntimeException e){
+			throw new InvalidInputException(e.getMessage());
+		}
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
@@ -92,6 +119,9 @@ public class PizzaDeliveryController {
 	}
 	
 	public void updateMenuPizza(MenuPizza aMenuPizza, String aName, double aPrice, int aCalorieCount, Ingredient...ingredients) throws InvalidInputException{
+		if(!PizzaDeliveryManager.getInstance().getPizzas().contains(aMenuPizza)){
+			throw new InvalidInputException("Pizza not found");
+		}
 		aMenuPizza.setCalorieCount(aCalorieCount);
 		aMenuPizza.setIngredients(ingredients);
 		aMenuPizza.setName(aName);
@@ -101,12 +131,16 @@ public class PizzaDeliveryController {
 	}
 	
 	// Modify CustomPizza
-	public void createCustomPizza(Ingredient... ingredients){
+	public void createCustomPizza(Ingredient... ingredients) throws InvalidInputException{
 		double price=BASE_PRICE;
 		for(Ingredient i:ingredients){
 			price+=i.getPrice();
 		}
-		new CustomPizza(price,PizzaDeliveryManager.getInstance(),ingredients);
+		try{
+			new CustomPizza(price,PizzaDeliveryManager.getInstance(),ingredients);
+		}catch(RuntimeException e){
+			throw new InvalidInputException(e.getMessage());
+		}
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
@@ -115,7 +149,12 @@ public class PizzaDeliveryController {
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
-	public void updateCustomPizza(CustomPizza aCustomPizza, Ingredient...ingredients){
+	public void updateCustomPizza(CustomPizza aCustomPizza, Ingredient...ingredients) throws InvalidInputException{
+		
+		if(!PizzaDeliveryManager.getInstance().getPizzas().contains(aCustomPizza)){
+			throw new InvalidInputException("Pizza not found.");
+		}
+		
 		double price=BASE_PRICE;
 		for(Ingredient i:ingredients){
 			price+=i.getPrice();
@@ -127,4 +166,3 @@ public class PizzaDeliveryController {
 	}
 	
 }
-
