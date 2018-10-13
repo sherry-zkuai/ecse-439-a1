@@ -10,8 +10,6 @@ import java.util.List;
 import static javax.swing.GroupLayout.Alignment.CENTER;
 
 import ca.mcgill.ecse439.pds.controller.PizzaDeliveryController;
-import ca.mcgill.ecse439.pds.model.CustomPizza;
-import ca.mcgill.ecse439.pds.model.Ingredient;
 import ca.mcgill.ecse439.pds.model.MenuPizza;
 import ca.mcgill.ecse439.pds.model.Order;
 import ca.mcgill.ecse439.pds.model.Pizza;
@@ -25,9 +23,8 @@ public class ViewOrdersPage extends JFrame
 	private static Dimension TABLE_DIM = new Dimension(1000, 400);
 	
 	private List<Order> orders;
-	private String[] orderTableColumnNames = {"Customer", "Contact", "Address", "Bill", "Order", "Delivering", "Close Order" };
-//	private Object[][] orderTableData = prepTableData();
-	private Object[][] orderTableData = {{"Hi", "Hi", "Hi", "Hi", "Hi", "Hi", "Hi"}};
+	private String[] orderTableColumnNames = {"Customer", "Contact", "Address", "Bill", "Order", "Delivering" };
+	private Object[][] orderTableData;
 	
 	private String error;
 	
@@ -36,6 +33,7 @@ public class ViewOrdersPage extends JFrame
 	private JLabel errorMsg;
 	
 	private JTable orderTable;
+	private DefaultTableModel tableModel;
 	private JScrollPane orderScrollPane;
 	
 	public ViewOrdersPage()
@@ -60,19 +58,22 @@ public class ViewOrdersPage extends JFrame
 		title.setFont(new java.awt.Font(null, java.awt.Font.PLAIN, 40));
 				
 		// order Table
+		orderTableData = prepTableData();
 		orderTable = new JTable(orderTableData, orderTableColumnNames);	
 		orderScrollPane = new JScrollPane(orderTable);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
 		DefaultTableCellRenderer bgRenderer = new DefaultTableCellRenderer();
 		bgRenderer.setHorizontalAlignment( JLabel.CENTER );
-		bgRenderer.setBackground(Color.decode("#C9CAC9"));
-		DefaultTableModel tableModel = new DefaultTableModel(orderTableData, orderTableColumnNames)
+		bgRenderer.setBackground(Color.decode("#FF6961"));
+		tableModel = new DefaultTableModel(orderTableData, orderTableColumnNames)
 		{
+			private static final long serialVersionUID = 5452268246136815997L;
+
 			@Override
 		    public boolean isCellEditable(int row, int column)
 			{
-		       return (column == 4);
+		       return false;
 		    }
 		};
 
@@ -85,15 +86,27 @@ public class ViewOrdersPage extends JFrame
 		orderTable.getColumnModel().getColumn(3).setPreferredWidth(40);
 		orderTable.getColumnModel().getColumn(4).setPreferredWidth(50);
 		orderTable.getColumnModel().getColumn(5).setPreferredWidth(50);
-		orderTable.getColumnModel().getColumn(6).setPreferredWidth(50);
 		orderTable.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(1).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(2).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(3).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(5).setCellRenderer( bgRenderer );
-		orderTable.getColumnModel().getColumn(6).setCellRenderer( bgRenderer );
 		orderScrollPane.setPreferredSize(TABLE_DIM);
+		orderTable.addMouseListener(new java.awt.event.MouseAdapter()
+		{
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt)
+		    {
+		        int row = orderTable.rowAtPoint(evt.getPoint());
+		        int col = orderTable.columnAtPoint(evt.getPoint());
+		        
+		        if ((col == 5) && (row > -1) && (row < orders.size()))
+		        {
+		            deleteButtonActionPerformed(row);
+		        }
+		    }
+		});
 		
 		// Creating the Layout
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -125,42 +138,85 @@ public class ViewOrdersPage extends JFrame
 		pack();
 	}
 
-//	private Object[][] prepTableData()
-//	{		
-//		int nbPizzas = 0;
-//
-//		if (PizzaDeliveryManager.getInstance().hasPizzas())
-//			System.out.println("Found one.");
-//		
-//		for(Pizza p:PizzaDeliveryManager.getInstance().getPizzas())
-//		{
-//			if(p instanceof orderPizza)
-//			{
-//				orderPizzas.add((orderPizza)p);
-//				nbPizzas++;
-//			}
-//		}
-//
-//		Object[][] tablePrep = new Object[nbPizzas][5];
-//		
-//		for (int i = 0; i < nbPizzas; i++)
-//		{
-//			String ingredients = "<html>";
-//			for (Ingredient ing:orderPizzas.get(i).getIngredients())
-//			{
-//				ingredients += (ing.getName() + ", ");
-//			}
-//			ingredients += "</html>";
-//			
-//			Object[] temp = {new String(orderPizzas.get(i).getName()),
-//							 new Double(orderPizzas.get(i).getPrice()),
-//							 new String(ingredients),
-//							 new Integer(orderPizzas.get(i).getCalorieCount()),
-//							 new Integer(0)};
-//			
-//			tablePrep[i] = temp;
-//		}
-//		
-//		return tablePrep;
-//	}
+	private Object[][] prepTableData()
+	{		
+		if (PizzaDeliveryManager.getInstance().hasOrders())
+		{
+			orders = PizzaDeliveryManager.getInstance().getOrders();
+		}
+		else
+		{
+			error = "There are no orders in the system";
+			refreshData();
+			return null;
+		}
+		
+		PizzaDeliveryController cont = new PizzaDeliveryController();
+
+		Object[][] tablePrep = new Object[orders.size()][6];
+		
+		for (int i = 0; i < orders.size(); i++)
+		{	
+			String contact;
+			if (orders.get(i).getPhoneNumber() != null && !orders.get(i).getPhoneNumber().equals(""))
+			{
+				contact = orders.get(i).getPhoneNumber();
+			}
+			else if (orders.get(i).getEmail() != null && !orders.get(i).getEmail().equals(""))
+			{
+				contact = orders.get(i).getEmail();
+			}
+			else
+			{
+				error = "Could not find customer contact info. Internal error. Contact Admin.";
+				refreshData();
+				return null;
+			}
+									
+			String items = "<html>";
+			for (int k = 0; k < orders.get(i).getPizzas().size(); k++)
+			{	
+				Pizza p = orders.get(i).getPizza(k);
+				
+				int nbPizzas = orders.get(i).getNumberOfEachPizza(k);
+
+				if (nbPizzas < 1)
+				{
+					continue;
+				}
+				
+				items += Integer.toString(nbPizzas) + " x ";
+				if (p instanceof MenuPizza)
+				{
+					items += (((MenuPizza) p).getName()+ ", ");
+				}
+				else
+				{
+					items += ("Custom Pizza, ");
+				}
+			}
+			items += "</html>";
+						
+			Object[] temp = {new String(orders.get(i).getCustomerName()),
+							 new String(contact),
+							 new String("<html>" + orders.get(i).getAddress() + "</html>"),
+							 new Double(cont.getOrderValue(orders.get(i))),
+							 new String(items),
+							 "Close Order"};
+			
+			tablePrep[i] = temp;
+		}
+		
+		return tablePrep;
+	}
+	
+	private void deleteButtonActionPerformed(int i) 
+	{		
+		PizzaDeliveryController cont = new PizzaDeliveryController();
+		cont.removeOrder(orders.get(i));
+		
+		tableModel.removeRow(i);
+		orderTable.repaint();
+
+	}
 }

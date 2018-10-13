@@ -120,6 +120,8 @@ public class MakeOrderPage extends JFrame
 		bgRenderer.setBackground(Color.decode("#C9CAC9"));
 		DefaultTableModel tableModel = new DefaultTableModel(menuTableData, menuTableColumnNames)
 		{
+			private static final long serialVersionUID = -6119566140421846301L;
+
 			@Override
 		    public boolean isCellEditable(int row, int column)
 			{
@@ -230,9 +232,9 @@ public class MakeOrderPage extends JFrame
 		phone = phoneField.getText();
 		email = emailField.getText();
 		address = addressField.getText();		
-		List<MenuPizza> temp = new ArrayList<MenuPizza>();
-		int nbOrder = 0;
-		
+		List<MenuPizza> tempPizza = new ArrayList<MenuPizza>();
+		List<Integer> tempNum = new ArrayList<Integer>();
+				
 		for (int i = 0; i < menuTable.getRowCount(); i++)
 		{
 			int rowOrder = 0;
@@ -248,28 +250,35 @@ public class MakeOrderPage extends JFrame
 				return;
 			}
 					
-			for (int j = 0; j < rowOrder; j++)
-			{
-				temp.add(menuPizzas.get(i));
-				nbOrder++;
-			}
+			tempPizza.add(menuPizzas.get(i));
+			tempNum.add(new Integer(rowOrder));
 		}
 				
-		MenuPizza[] order = new MenuPizza[nbOrder];
-		for (int k = 0; k < nbOrder; k++)
+		MenuPizza[] order = new MenuPizza[tempPizza.size()];
+		int[] numbers = new int[tempNum.size()];
+		
+		if (tempPizza.size() != tempNum.size())
 		{
-			order[k] = temp.get(k);
+			error = "Internal Error. Contact admin";
+			return;
+		}
+		
+		for (int k = 0; k < tempPizza.size(); k++)	
+		{
+			order[k] = tempPizza.get(k);
+			numbers[k] = tempNum.get(k);
 		}
 								
 		try
 		{
-			cont.createOrder(name, phone, email, address, order);
+			cont.createOrder(name, phone, email, address, order, numbers);
 		} 
 		catch (Exception e)
 		{
 			error = e.getMessage();
 		}
 
+		error = "Your order has been received!";
 		refreshData();
 	}
 

@@ -3,7 +3,6 @@ package ca.mcgill.ecse439.pds.persistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import ca.mcgill.ecse439.pds.model.CustomPizza;
 import ca.mcgill.ecse439.pds.model.Ingredient;
@@ -22,7 +21,7 @@ public class PizzaDeliveryPersistence {
 		PersistenceXStream.setAlias("ingredient", Ingredient.class);
 		PersistenceXStream.setAlias("menu_pizza", MenuPizza.class);
 		PersistenceXStream.setAlias("order", Order.class);
-		PersistenceXStream.setAlias("pizza", Pizza.class);						// TODO: Maybe unnecessary...
+		PersistenceXStream.setAlias("pizza", Pizza.class);
 		PersistenceXStream.setAlias("manager", PizzaDeliveryManager.class);
 		
 		// If the model exists, load it; if not, create it
@@ -36,18 +35,21 @@ public class PizzaDeliveryPersistence {
 			}
 			
 			//----Start of adding basic menu items-------
-			PizzaDeliveryManager pdm=PizzaDeliveryManager.getInstance();
+			PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
 			
-			Ingredient flour=new Ingredient("flour",0.0,pdm);
-			Ingredient yeast=new Ingredient("yeast",0.0,pdm);
-			Ingredient sauce=new Ingredient("sauce",0,pdm);
-			Ingredient cheese=new Ingredient("cheese",2,pdm);
-			Ingredient tomato=new Ingredient("tomato",2.0,pdm);
-			Ingredient pepperoni=new Ingredient("pepperoni",3,pdm);
+			Ingredient flour = new Ingredient("Flour", 0.0, pdm);
+			Ingredient yeast = new Ingredient("Yeast", 0.0, pdm);
+			Ingredient sauce = new Ingredient("Sauce", 0, pdm);
+			Ingredient cheese = new Ingredient("Cheese", 2, pdm);
+			Ingredient tomato = new Ingredient("Tomato", 2.0, pdm);
+			Ingredient pepperoni = new Ingredient("Pepperoni", 3, pdm);
+			Ingredient basil = new Ingredient("Basil", 1.0, pdm);
+			Ingredient bacon=new Ingredient("Bacon", 3, pdm);
 			
-			MenuPizza marinara=new MenuPizza(9.5,pdm,"marinara",1000,flour,yeast,cheese,sauce);
-			MenuPizza pprn=new MenuPizza(11,pdm,"pepperoni",1200,flour,yeast,cheese,sauce,pepperoni);
-			MenuPizza neapolitan=new MenuPizza(10,pdm,"neapolitan",1100,flour,yeast,sauce,cheese,tomato);
+			MenuPizza marinara = new MenuPizza(9.5, pdm, "Marinara", 1000, flour, yeast, cheese, sauce);
+			MenuPizza pprn = new MenuPizza(11, pdm, "Pepperoni", 1200, flour, yeast, cheese, sauce, pepperoni);
+			MenuPizza neapolitan = new MenuPizza(10, pdm, "Neapolitan", 1100, flour, yeast, sauce, cheese, tomato, basil);
+			MenuPizza carbonara = new MenuPizza(10, pdm, "Carbonara", 1100, flour, yeast, sauce, cheese, tomato, bacon);
 
 			PersistenceXStream.saveToXMLwithXStream(pdm);
 		}
@@ -58,18 +60,6 @@ public class PizzaDeliveryPersistence {
 		PizzaDeliveryPersistence.initializeXStream();
 		PizzaDeliveryManager pdm2 = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
 
-//		if (pdm2 != null) {
-//			Iterator<Ingredient> oIt = pdm2.getIngredients().iterator();
-//			while (oIt.hasNext())
-//				pdm.addIngredient(oIt.next());
-//			Iterator<Pizza> pIt = pdm2.getPizzas().iterator();
-//			while (pIt.hasNext())
-//				pdm.addPizza(pIt.next());
-//			Iterator<Order> iIt = pdm2.getOrders().iterator();
-//			while (iIt.hasNext())
-//				pdm.addOrder(iIt.next());
-//		}	
-		
 		if(pdm2!=null){
 			ArrayList<Ingredient> is=new ArrayList<>(pdm2.getIngredients());
 			ArrayList<Pizza> ps=new ArrayList<>(pdm2.getPizzas());
