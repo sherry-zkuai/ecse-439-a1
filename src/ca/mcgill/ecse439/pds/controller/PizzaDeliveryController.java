@@ -81,6 +81,16 @@ public class PizzaDeliveryController {
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
+	public double getOrderValue(Order aOrder){
+		
+		double total=0;
+		for(int i=0;i<aOrder.getPizzas().size();i++){
+			total+=aOrder.getPizza(i).getPrice()*aOrder.getNumberOfEachPizza(i);
+		}
+		
+		return total;
+	}
+	
 	// Modify Ingredient
 	public void createIngredient (String aName, double aPrice) throws InvalidInputException{
 		try{
