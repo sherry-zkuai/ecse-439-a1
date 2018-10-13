@@ -13,7 +13,7 @@ import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
 public class PizzaDeliveryPersistence {
 
-    private static String filename = "data.xml";
+    private static String filename = "output/data.xml";
 	
 	private static void initializeXStream() {
 		PersistenceXStream.setFilename(filename);
