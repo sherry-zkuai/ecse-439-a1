@@ -2,6 +2,7 @@ package ca.mcgill.ecse439.pds.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import ca.mcgill.ecse439.pds.model.CustomPizza;
@@ -57,16 +58,31 @@ public class PizzaDeliveryPersistence {
 		PizzaDeliveryPersistence.initializeXStream();
 		PizzaDeliveryManager pdm2 = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
 
-		if (pdm2 != null) {
-			Iterator<Order> oIt = pdm2.getOrders().iterator();
-			while (oIt.hasNext())
-				pdm.addOrder(oIt.next());
-			Iterator<Pizza> pIt = pdm2.getPizzas().iterator();
-			while (pIt.hasNext())
-				pdm.addPizza(pIt.next());
-			Iterator<Ingredient> iIt = pdm2.getIngredients().iterator();
-			while (iIt.hasNext())
-				pdm.addIngredient(iIt.next());
-		}	}
-
+//		if (pdm2 != null) {
+//			Iterator<Ingredient> oIt = pdm2.getIngredients().iterator();
+//			while (oIt.hasNext())
+//				pdm.addIngredient(oIt.next());
+//			Iterator<Pizza> pIt = pdm2.getPizzas().iterator();
+//			while (pIt.hasNext())
+//				pdm.addPizza(pIt.next());
+//			Iterator<Order> iIt = pdm2.getOrders().iterator();
+//			while (iIt.hasNext())
+//				pdm.addOrder(iIt.next());
+//		}	
+		
+		if(pdm2!=null){
+			ArrayList<Ingredient> is=new ArrayList<>(pdm2.getIngredients());
+			ArrayList<Pizza> ps=new ArrayList<>(pdm2.getPizzas());
+			ArrayList<Order> os=new ArrayList<>(pdm2.getOrders());
+			for(int i=0;i<is.size();i++){
+				pdm.addIngredient(is.get(i));
+			}
+			for(int i=0;i<ps.size();i++){
+				pdm.addPizza(ps.get(i));
+			}
+			for(int i=0;i<os.size();i++){
+				pdm.addOrder(os.get(i));
+			}
+		}
+	}
 }
