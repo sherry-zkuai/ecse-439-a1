@@ -22,11 +22,11 @@ public class PizzaDeliverySystem {
 		// load model
 		PizzaDeliveryPersistence.loadPizzaDeliveryModel();
 
-		// Add Ingredients and Menu Items
-		pantry.add(new Ingredient("Eggplant", 999.0, PizzaDeliveryManager.getInstance()));
-		pantry.add(new Ingredient("Spaghet", 222.0, PizzaDeliveryManager.getInstance()));
-		pantry.add(new Ingredient("peps", 0.111, PizzaDeliveryManager.getInstance()));
-		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+//		// Add Ingredients and Menu Items
+//		pantry.add(new Ingredient("Eggplant", 999.0, PizzaDeliveryManager.getInstance()));
+//		pantry.add(new Ingredient("Spaghet", 222.0, PizzaDeliveryManager.getInstance()));
+//		pantry.add(new Ingredient("peps", 0.111, PizzaDeliveryManager.getInstance()));
+//		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 		
 		// start UI
 		java.awt.EventQueue.invokeLater(new Runnable() {
