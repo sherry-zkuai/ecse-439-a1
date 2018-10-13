@@ -22,10 +22,13 @@ public class PizzaDeliveryController {
 	}
 	
 	// Modify Order
-	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas)
+	public void createOrder(String name, String phoneNumber, String email, String address, Pizza[] pizzas, int[] number)
 			throws InvalidInputException {
 		try{
-			PizzaDeliveryManager.getInstance().addOrder(name, phoneNumber, email, address, pizzas);
+			Order order=PizzaDeliveryManager.getInstance().addOrder(name, phoneNumber, email, address, pizzas);
+			for(int i:number){
+				order.addNumberOfEachPizza(i);
+			}
 		}catch (RuntimeException e){
 			throw new InvalidInputException(e.getMessage());
 		}
