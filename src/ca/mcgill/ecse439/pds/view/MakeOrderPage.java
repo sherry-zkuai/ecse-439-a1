@@ -120,6 +120,8 @@ public class MakeOrderPage extends JFrame
 		bgRenderer.setBackground(Color.decode("#C9CAC9"));
 		DefaultTableModel tableModel = new DefaultTableModel(menuTableData, menuTableColumnNames)
 		{
+			private static final long serialVersionUID = -6119566140421846301L;
+
 			@Override
 		    public boolean isCellEditable(int row, int column)
 			{
@@ -270,6 +272,7 @@ public class MakeOrderPage extends JFrame
 			error = e.getMessage();
 		}
 
+		error = "Your order has been received!";
 		refreshData();
 	}
 
