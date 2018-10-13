@@ -5,6 +5,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static javax.swing.GroupLayout.Alignment.CENTER;
@@ -25,7 +27,7 @@ public class MakeOrderPage extends JFrame
 	private static Dimension EXT_DIM =  new Dimension(200, 96); 
 	private static Dimension MENU_DIM =  new Dimension(600, 100); 
 	
-	private List<MenuPizza> menuPizzas;
+	private List<MenuPizza> menuPizzas = new LinkedList<MenuPizza>();
 	private String[] menuTableColumnNames = {"Name", "Price", "Ingredients",	"Calories", "Order" };
 	private Object[][] menuTableData = prepTableData();
 	
@@ -34,7 +36,6 @@ public class MakeOrderPage extends JFrame
 	private String phone = "";
 	private String email = "";
 	private String address = "";
-	private MenuPizza[] order;
 	
 	// UI Elements
 	private JLabel title;
@@ -223,13 +224,43 @@ public class MakeOrderPage extends JFrame
 
 		// Set Controller
 		PizzaDeliveryController cont = new PizzaDeliveryController();
-
+		
 		// Gather Input
 		name = nameField.getText();
 		phone = phoneField.getText();
 		email = emailField.getText();
-		address = addressField.getText();
+		address = addressField.getText();		
+		List<MenuPizza> temp = new ArrayList<MenuPizza>();
+		int nbOrder = 0;
 		
+		for (int i = 0; i < menuTable.getRowCount(); i++)
+		{
+			int rowOrder = 0;
+			
+			try
+			{
+				rowOrder = Integer.parseInt(menuTable.getModel().getValueAt(i, 4).toString());
+			}
+			catch (Exception e)
+			{
+				error = "Please input a whole number into the order cell.";
+				refreshData();
+				return;
+			}
+					
+			for (int j = 0; j < rowOrder; j++)
+			{
+				temp.add(menuPizzas.get(i));
+				nbOrder++;
+			}
+		}
+				
+		MenuPizza[] order = new MenuPizza[nbOrder];
+		for (int k = 0; k < nbOrder; k++)
+		{
+			order[k] = temp.get(k);
+		}
+								
 		try
 		{
 			cont.createOrder(name, phone, email, address, order);
@@ -245,19 +276,24 @@ public class MakeOrderPage extends JFrame
 	private Object[][] prepTableData()
 	{		
 		int nbPizzas = 0;
-
+				
 		if (PizzaDeliveryManager.getInstance().hasPizzas())
-			System.out.println("Found one.");
-		
-		for(Pizza p:PizzaDeliveryManager.getInstance().getPizzas())
 		{
-			if(p instanceof MenuPizza)
+			for(Pizza p:PizzaDeliveryManager.getInstance().getPizzas())
 			{
-				menuPizzas.add((MenuPizza)p);
-				nbPizzas++;
+				if(p instanceof MenuPizza)
+				{
+					menuPizzas.add((MenuPizza)p);
+					nbPizzas++;
+				}
 			}
 		}
-
+		else
+		{
+			error = "Could not find pizza objects. Contact admin.";
+			return null;
+		}
+		
 		Object[][] tablePrep = new Object[nbPizzas][5];
 		
 		for (int i = 0; i < nbPizzas; i++)
