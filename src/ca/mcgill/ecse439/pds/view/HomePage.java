@@ -3,6 +3,8 @@ package ca.mcgill.ecse439.pds.view;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.GroupLayout.Alignment.CENTER;
+
 import ca.mcgill.ecse439.pds.view.MakeOrderPage;
 import ca.mcgill.ecse439.pds.view.ViewOrdersPage;
 
@@ -22,15 +24,15 @@ public class HomePage extends JFrame {
 	private void initComponents() {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Welcome to Mama Mia's!");
-		getContentPane().setBackground(Color.DARK_GRAY);
+		getContentPane().setBackground(Color.decode("#228B22"));
 
 		// Title
-		title = new JLabel("Welcome to Mama Mia's!");
-		title.setForeground(Color.RED);
-		title.setFont(new java.awt.Font(null, java.awt.Font.PLAIN, 25));
+		title = new JLabel("Welcome to Mamma Mia's!");
+		title.setForeground(Color.WHITE);
+		title.setFont(new java.awt.Font(null, java.awt.Font.PLAIN, 40));
 
 		subTitle = new JLabel("Your one stop shop for original pizza names and competitive prices!");
-		subTitle.setForeground(Color.GREEN);
+		subTitle.setForeground(Color.WHITE);
 		subTitle.setFont(new java.awt.Font(null, java.awt.Font.PLAIN, 18));
 
 		// Make Order Button
@@ -60,17 +62,27 @@ public class HomePage extends JFrame {
 		getContentPane().setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
+		
 		layout.setHorizontalGroup(
-				layout.createParallelGroup().addGroup(layout.createSequentialGroup().addGap(40).addComponent(title))
-						.addGroup(layout.createSequentialGroup().addGap(25).addComponent(subTitle))
-						.addGroup(layout.createSequentialGroup().addGap(20).addComponent(makeOrderButton).addGap(20)
-								.addComponent(viewOrdersButton).addGap(20)));
+			layout.createParallelGroup(CENTER)
+				.addComponent(title)
+				.addComponent(subTitle)
+				.addGroup(layout.createSequentialGroup()
+					.addComponent(makeOrderButton)
+					.addGap(20)
+					.addComponent(viewOrdersButton)));
 
 		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] { makeOrderButton, viewOrdersButton });
 
-		layout.setVerticalGroup(layout.createSequentialGroup().addGap(30).addComponent(title).addComponent(subTitle)
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
 				.addGap(30)
-				.addGroup(layout.createParallelGroup().addComponent(makeOrderButton).addComponent(viewOrdersButton)));
+				.addComponent(title)
+				.addComponent(subTitle)
+				.addGap(30)
+				.addGroup(layout.createParallelGroup()
+					.addComponent(makeOrderButton)
+					.addComponent(viewOrdersButton)));
 
 		pack();
 		setLocationRelativeTo(null);
