@@ -49,13 +49,15 @@ public class PizzaDeliveryPersistence {
 			MenuPizza neapolitan=new MenuPizza(10,pdm,"neapolitan",1100,flour,yeast,sauce,cheese,tomato);
 
 			PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+		}else{
+			PizzaDeliveryManager pdm=(PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
 		}
 	}
 
 	public static void loadPizzaDeliveryModel() {
 		//PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
 		PizzaDeliveryPersistence.initializeXStream();
-//		PizzaDeliveryManager pdm = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
+//		PizzaDeliveryManager pdm2 = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
 //		if (pdm2 != null) {
 //			Iterator<Order> oIt = pdm2.getOrders().iterator();
 //			while (oIt.hasNext())
