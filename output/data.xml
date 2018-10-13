@@ -1,6 +1,100 @@
 <manager id="1">
-  <pizzas id="2"/>
-  <ingredients id="3">
+  <pizzas id="2">
+    <menu__pizza id="3">
+      <price>9.5</price>
+      <ingredients id="4">
+        <ingredient id="5">
+          <name>Flour</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="6">
+          <name>Yeast</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="7">
+          <name>Cheese</name>
+          <price>2.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="8">
+          <name>Sauce</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Marinara</name>
+      <calorieCount>1000</calorieCount>
+    </menu__pizza>
+    <menu__pizza id="9">
+      <price>11.0</price>
+      <ingredients id="10">
+        <ingredient reference="5"/>
+        <ingredient reference="6"/>
+        <ingredient reference="7"/>
+        <ingredient reference="8"/>
+        <ingredient id="11">
+          <name>Pepperoni</name>
+          <price>3.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Pepperoni</name>
+      <calorieCount>1200</calorieCount>
+    </menu__pizza>
+    <menu__pizza id="12">
+      <price>10.0</price>
+      <ingredients id="13">
+        <ingredient reference="5"/>
+        <ingredient reference="6"/>
+        <ingredient reference="8"/>
+        <ingredient reference="7"/>
+        <ingredient id="14">
+          <name>Tomato</name>
+          <price>2.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="15">
+          <name>Basil</name>
+          <price>1.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Neapolitan</name>
+      <calorieCount>1100</calorieCount>
+    </menu__pizza>
+    <menu__pizza id="16">
+      <price>10.0</price>
+      <ingredients id="17">
+        <ingredient reference="5"/>
+        <ingredient reference="6"/>
+        <ingredient reference="8"/>
+        <ingredient reference="7"/>
+        <ingredient reference="14"/>
+        <ingredient id="18">
+          <name>Bacon</name>
+          <price>3.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Carbonara</name>
+      <calorieCount>1100</calorieCount>
+    </menu__pizza>
+  </pizzas>
+  <ingredients id="19">
+    <ingredient reference="5"/>
+    <ingredient reference="6"/>
+    <ingredient reference="8"/>
+    <ingredient reference="7"/>
+    <ingredient reference="14"/>
+    <ingredient reference="11"/>
+    <ingredient reference="15"/>
+    <ingredient reference="18"/>
   </ingredients>
-  <orders id="7"/>
+  <orders id="20"/>
 </manager>

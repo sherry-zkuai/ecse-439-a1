@@ -27,7 +27,7 @@ public class HomePage extends JFrame {
 		getContentPane().setBackground(Color.decode("#228B22"));
 
 		// Title
-		title = new JLabel("Welcome to Mama Mia's!");
+		title = new JLabel("Welcome to Mamma Mia's!");
 		title.setForeground(Color.WHITE);
 		title.setFont(new java.awt.Font(null, java.awt.Font.PLAIN, 40));
 

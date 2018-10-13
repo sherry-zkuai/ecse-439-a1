@@ -5,13 +5,18 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
+import java.util.List;
 
 import static javax.swing.GroupLayout.Alignment.CENTER;
 
 import ca.mcgill.ecse439.pds.controller.PizzaDeliveryController;
+import ca.mcgill.ecse439.pds.model.Ingredient;
+import ca.mcgill.ecse439.pds.model.MenuPizza;
 import ca.mcgill.ecse439.pds.model.Pizza;
+import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
-public class MakeOrderPage extends JFrame {
+public class MakeOrderPage extends JFrame
+{
 	private static final long serialVersionUID = 2517121556423951520L;
 
 	private static String TITLE = "Pizza Order Form";
@@ -20,21 +25,16 @@ public class MakeOrderPage extends JFrame {
 	private static Dimension EXT_DIM =  new Dimension(200, 96); 
 	private static Dimension MENU_DIM =  new Dimension(600, 100); 
 	
-	// Test
+	private List<MenuPizza> menuPizzas;
 	private String[] menuTableColumnNames = {"Name", "Price", "Ingredients",	"Calories", "Order" };
-	private Object[][] menuTableData = {
-		{"Cheese", new Double(8.00), "<html>White flour dough, Tomato Sauce, Cheese</html>", new Integer(500), new Integer(0)},
-		{"Pepporoni", new Double(8.00), "<html>White flour dough, Tomato Sauce, Cheese, Pepperoni</html>", new Integer(500), new Integer(0)},
-		{"Vegitarian", new Double(8.00), "<html>White flour dough, Tomato Sauce, Cheese, Mushrooms, Onions, Green Peppers, Tomatoes</html>", new Integer(500), new Integer(0)},
-		{"All Dressed", new Double(8.00), "<html>White flour dough, Tomato Sauce, Cheese, Pepperoni, Mushrooms, Green Peppers</html>", new Integer(500), new Integer(0)},
-	};
+	private Object[][] menuTableData = prepTableData();
 	
 	private String error;
 	private String name = "";
 	private String phone = "";
 	private String email = "";
 	private String address = "";
-	private Pizza[] order;
+	private MenuPizza[] order;
 	
 	// UI Elements
 	private JLabel title;
@@ -71,7 +71,7 @@ public class MakeOrderPage extends JFrame {
 
 		// Error Message
 		errorMsg = new JLabel();
-		errorMsg.setForeground(Color.MAGENTA);
+		errorMsg.setForeground(Color.RED);
 		
 		// Title
 		title = new JLabel(TITLE);
@@ -240,5 +240,44 @@ public class MakeOrderPage extends JFrame {
 		}
 
 		refreshData();
+	}
+
+	private Object[][] prepTableData()
+	{		
+		int nbPizzas = 0;
+
+		if (PizzaDeliveryManager.getInstance().hasPizzas())
+			System.out.println("Found one.");
+		
+		for(Pizza p:PizzaDeliveryManager.getInstance().getPizzas())
+		{
+			if(p instanceof MenuPizza)
+			{
+				menuPizzas.add((MenuPizza)p);
+				nbPizzas++;
+			}
+		}
+
+		Object[][] tablePrep = new Object[nbPizzas][5];
+		
+		for (int i = 0; i < nbPizzas; i++)
+		{
+			String ingredients = "<html>";
+			for (Ingredient ing:menuPizzas.get(i).getIngredients())
+			{
+				ingredients += (ing.getName() + ", ");
+			}
+			ingredients += "</html>";
+			
+			Object[] temp = {new String(menuPizzas.get(i).getName()),
+							 new Double(menuPizzas.get(i).getPrice()),
+							 new String(ingredients),
+							 new Integer(menuPizzas.get(i).getCalorieCount()),
+							 new Integer(0)};
+			
+			tablePrep[i] = temp;
+		}
+		
+		return tablePrep;
 	}
 }

@@ -12,8 +12,8 @@ import ca.mcgill.ecse439.pds.model.Pizza;
 import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 
 public class PizzaDeliveryPersistence {
-	
-	private static String filename = "output/data.xml";
+
+    private static String filename = "output/data.xml";
 	
 	private static void initializeXStream() {
 		PersistenceXStream.setFilename(filename);
@@ -21,7 +21,7 @@ public class PizzaDeliveryPersistence {
 		PersistenceXStream.setAlias("ingredient", Ingredient.class);
 		PersistenceXStream.setAlias("menu_pizza", MenuPizza.class);
 		PersistenceXStream.setAlias("order", Order.class);
-		PersistenceXStream.setAlias("pizza", Pizza.class); // TODO: Maybe unnecessary...
+		PersistenceXStream.setAlias("pizza", Pizza.class);
 		PersistenceXStream.setAlias("manager", PizzaDeliveryManager.class);
 		
 		// If the model exists, load it; if not, create it
@@ -33,7 +33,27 @@ public class PizzaDeliveryPersistence {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			
+			//----Start of adding basic menu items-------
+			PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
+			
+			Ingredient flour = new Ingredient("Flour", 0.0, pdm);
+			Ingredient yeast = new Ingredient("Yeast", 0.0, pdm);
+			Ingredient sauce = new Ingredient("Sauce", 0, pdm);
+			Ingredient cheese = new Ingredient("Cheese", 2, pdm);
+			Ingredient tomato = new Ingredient("Tomato", 2.0, pdm);
+			Ingredient pepperoni = new Ingredient("Pepperoni", 3, pdm);
+			Ingredient basil = new Ingredient("Basil", 1.0, pdm);
+			Ingredient bacon=new Ingredient("Bacon", 3, pdm);
+			
+			MenuPizza marinara = new MenuPizza(9.5, pdm, "Marinara", 1000, flour, yeast, cheese, sauce);
+			MenuPizza pprn = new MenuPizza(11, pdm, "Pepperoni", 1200, flour, yeast, cheese, sauce, pepperoni);
+			MenuPizza neapolitan = new MenuPizza(10, pdm, "Neapolitan", 1100, flour, yeast, sauce, cheese, tomato, basil);
+			MenuPizza carbonara = new MenuPizza(10, pdm, "Carbonara", 1100, flour, yeast, sauce, cheese, tomato, bacon);
+
 			PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
+//		}else{
+//			PizzaDeliveryManager pdm = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
 		}
 	}
 
@@ -41,16 +61,22 @@ public class PizzaDeliveryPersistence {
 		PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
 		PizzaDeliveryPersistence.initializeXStream();
 		PizzaDeliveryManager pdm2 = (PizzaDeliveryManager) PersistenceXStream.loadFromXMLwithXStream();
+		
 		if (pdm2 != null) {
-			Iterator<Order> oIt = pdm2.getOrders().iterator();
-			while (oIt.hasNext())
-				pdm.addOrder(oIt.next());
-			Iterator<Pizza> pIt = pdm2.getPizzas().iterator();
-			while (pIt.hasNext())
-				pdm.addPizza(pIt.next());
-			Iterator<Ingredient> iIt = pdm2.getIngredients().iterator();
-			while (iIt.hasNext())
-				pdm.addIngredient(iIt.next());
+			for (Ingredient i:pdm2.getIngredients())
+			{
+				pdm.addIngredient(i);
+			}
+			
+			for (Pizza p:pdm2.getPizzas())
+			{
+				pdm.addPizza(p);
+			}
+			
+			for (Order o:pdm2.getOrders())
+			{
+				pdm.addOrder(o);
+			}
 		}
 	}
 
