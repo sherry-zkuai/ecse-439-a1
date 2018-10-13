@@ -3,6 +3,7 @@ package ca.mcgill.ecse439.pds.application;
 import ca.mcgill.ecse439.pds.persistence.PizzaDeliveryPersistence;
 import ca.mcgill.ecse439.pds.model.Ingredient;
 import ca.mcgill.ecse439.pds.model.MenuPizza;
+import ca.mcgill.ecse439.pds.model.PizzaDeliveryManager;
 import ca.mcgill.ecse439.pds.view.HomePage;
 
 public class PizzaDeliverySystem {
