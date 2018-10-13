@@ -67,6 +67,8 @@ class Order
 	String email;
 	String address;	
 	OrderStatus status = OrderStatus.InProcess;
+	
+	Integer[] numberOfEachPizza;
     
     * -> 1..* Pizza;
     

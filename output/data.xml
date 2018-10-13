@@ -85,8 +85,53 @@
       <name>Carbonara</name>
       <calorieCount>1100</calorieCount>
     </menu__pizza>
+    <menu__pizza id="19">
+      <price>9.5</price>
+      <ingredients id="20">
+        <ingredient id="21">
+          <name>Flour</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="22">
+          <name>Yeast</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="23">
+          <name>Cheese</name>
+          <price>2.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+        <ingredient id="24">
+          <name>Sauce</name>
+          <price>0.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Marinara</name>
+      <calorieCount>1000</calorieCount>
+    </menu__pizza>
+    <menu__pizza id="25">
+      <price>11.0</price>
+      <ingredients id="26">
+        <ingredient reference="21"/>
+        <ingredient reference="22"/>
+        <ingredient reference="23"/>
+        <ingredient reference="24"/>
+        <ingredient id="27">
+          <name>Pepperoni</name>
+          <price>3.0</price>
+          <pizzaDeliveryManager reference="1"/>
+        </ingredient>
+      </ingredients>
+      <pizzaDeliveryManager reference="1"/>
+      <name>Pepperoni</name>
+      <calorieCount>1200</calorieCount>
+    </menu__pizza>
   </pizzas>
-  <ingredients id="19">
+  <ingredients id="28">
     <ingredient reference="5"/>
     <ingredient reference="6"/>
     <ingredient reference="8"/>
@@ -95,6 +140,16 @@
     <ingredient reference="11"/>
     <ingredient reference="15"/>
     <ingredient reference="18"/>
+    <ingredient reference="21"/>
+    <ingredient reference="22"/>
+    <ingredient reference="24"/>
+    <ingredient reference="23"/>
+    <ingredient id="29">
+      <name>Tomato</name>
+      <price>2.0</price>
+      <pizzaDeliveryManager reference="1"/>
+    </ingredient>
+    <ingredient reference="27"/>
   </ingredients>
-  <orders id="20"/>
+  <orders id="30"/>
 </manager>

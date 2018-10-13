@@ -100,9 +100,6 @@ public class ViewOrdersPage extends JFrame
 		    {
 		        int row = orderTable.rowAtPoint(evt.getPoint());
 		        int col = orderTable.columnAtPoint(evt.getPoint());
-
-		    	System.out.println("Col: " + Integer.toString(col));
-		    	System.out.println("Row: " + Integer.toString(row));
 		        
 		        if ((col == 5) && (row > -1) && (row < orders.size()))
 		        {
@@ -153,6 +150,8 @@ public class ViewOrdersPage extends JFrame
 			refreshData();
 			return null;
 		}
+		
+		PizzaDeliveryController cont = new PizzaDeliveryController();
 
 		Object[][] tablePrep = new Object[orders.size()][6];
 		
@@ -173,15 +172,20 @@ public class ViewOrdersPage extends JFrame
 				refreshData();
 				return null;
 			}
-			
-			// ======================================================================================================================================
-			
-			Double bill = 0.0;
+									
 			String items = "<html>";
-			for (Pizza p:orders.get(i).getPizzas())
-			{
-				bill += p.getPrice();
+			for (int k = 0; k < orders.get(i).getPizzas().size(); k++)
+			{	
+				Pizza p = orders.get(i).getPizza(k);
 				
+				int nbPizzas = orders.get(i).getNumberOfEachPizza(k);
+
+				if (nbPizzas < 1)
+				{
+					continue;
+				}
+				
+				items += Integer.toString(nbPizzas) + " x ";
 				if (p instanceof MenuPizza)
 				{
 					items += (((MenuPizza) p).getName()+ ", ");
@@ -192,13 +196,11 @@ public class ViewOrdersPage extends JFrame
 				}
 			}
 			items += "</html>";
-			
-			// =======================================================================================================================================
-			
+						
 			Object[] temp = {new String(orders.get(i).getCustomerName()),
 							 new String(contact),
 							 new String("<html>" + orders.get(i).getAddress() + "</html>"),
-							 new Double(bill),
+							 new Double(cont.getOrderValue(orders.get(i))),
 							 new String(items),
 							 "Close Order"};
 			
@@ -209,13 +211,12 @@ public class ViewOrdersPage extends JFrame
 	}
 	
 	private void deleteButtonActionPerformed(int i) 
-	{
-		System.out.println("Gets here");
-		
+	{		
 		PizzaDeliveryController cont = new PizzaDeliveryController();
 		cont.removeOrder(orders.get(i));
 		
 		tableModel.removeRow(i);
 		orderTable.repaint();
+
 	}
 }
