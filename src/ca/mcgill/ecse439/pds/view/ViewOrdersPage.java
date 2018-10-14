@@ -1,10 +1,17 @@
 package ca.mcgill.ecse439.pds.view;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.swing.GroupLayout.Alignment.CENTER;
@@ -23,7 +30,7 @@ public class ViewOrdersPage extends JFrame
 	private static Dimension TABLE_DIM = new Dimension(1000, 400);
 	
 	private List<Order> orders;
-	private String[] orderTableColumnNames = {"Customer", "Contact", "Address", "Bill", "Order", "Delivering" };
+	private String[] orderTableColumnNames = {"Customer", "Contact", "Address", "Bill", "Order", "Delivering","Cancel Order" };
 	private Object[][] orderTableData;
 	
 	private String error;
@@ -63,9 +70,9 @@ public class ViewOrdersPage extends JFrame
 		orderScrollPane = new JScrollPane(orderTable);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-		DefaultTableCellRenderer bgRenderer = new DefaultTableCellRenderer();
-		bgRenderer.setHorizontalAlignment( JLabel.CENTER );
-		bgRenderer.setBackground(Color.decode("#FF6961"));
+		TableCellRenderer buttonRenderer = new JTableButtonRenderer();
+//		buttonRenderer.setHorizontalAlignment( JLabel.CENTER );
+//		buttonRenderer.setBackground(Color.decode("#FF6961"));
 		tableModel = new DefaultTableModel(orderTableData, orderTableColumnNames)
 		{
 			private static final long serialVersionUID = 5452268246136815997L;
@@ -86,26 +93,33 @@ public class ViewOrdersPage extends JFrame
 		orderTable.getColumnModel().getColumn(3).setPreferredWidth(40);
 		orderTable.getColumnModel().getColumn(4).setPreferredWidth(50);
 		orderTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+		orderTable.getColumnModel().getColumn(6).setPreferredWidth(50);
+
 		orderTable.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(1).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(2).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(3).setCellRenderer( centerRenderer );
 		orderTable.getColumnModel().getColumn(4).setCellRenderer( centerRenderer );
-		orderTable.getColumnModel().getColumn(5).setCellRenderer( bgRenderer );
+		orderTable.getColumnModel().getColumn(5).setCellRenderer( buttonRenderer );
+		orderTable.getColumnModel().getColumn(6).setCellRenderer( buttonRenderer );
 		orderScrollPane.setPreferredSize(TABLE_DIM);
 		orderTable.addMouseListener(new java.awt.event.MouseAdapter()
 		{
-		    @Override
-		    public void mouseClicked(java.awt.event.MouseEvent evt)
-		    {
-		        int row = orderTable.rowAtPoint(evt.getPoint());
-		        int col = orderTable.columnAtPoint(evt.getPoint());
-		        
-		        if ((col == 5) && (row > -1) && (row < orders.size()))
-		        {
-		            deleteButtonActionPerformed(row);
-		        }
-		    }
+			@Override
+	        public void mouseClicked(java.awt.event.MouseEvent evt)
+	        {
+	            int row = orderTable.rowAtPoint(evt.getPoint());
+	            int col = orderTable.columnAtPoint(evt.getPoint());
+	            
+	            if((col==5) && (row > -1) && (row < orders.size())){
+	            	changeStatusActionPerformed(row);
+	            }
+	            
+	            if ((col == 6) && (row > -1) && (row < orders.size()))
+	            {
+	                deleteButtonActionPerformed(row);
+	            }
+	        }
 		});
 		
 		// Creating the Layout
@@ -142,7 +156,7 @@ public class ViewOrdersPage extends JFrame
 	{		
 		if (PizzaDeliveryManager.getInstance().hasOrders())
 		{
-			orders = PizzaDeliveryManager.getInstance().getOrders();
+			orders = new ArrayList<Order>(PizzaDeliveryManager.getInstance().getOrders());
 		}
 		else
 		{
@@ -174,7 +188,8 @@ public class ViewOrdersPage extends JFrame
 			}
 									
 			String items = "<html>";
-			for (int k = 0; k < orders.get(i).getPizzas().size(); k++)
+			ArrayList<Pizza> ps=new ArrayList<>(orders.get(i).getPizzas());
+			for (int k = 0; k < ps.size(); k++)
 			{	
 				Pizza p = orders.get(i).getPizza(k);
 				
@@ -201,7 +216,7 @@ public class ViewOrdersPage extends JFrame
 							 new String(contact),
 							 new String("<html>" + orders.get(i).getAddress() + "</html>"),
 							 new Double(cont.getOrderValue(orders.get(i))),
-							 new String(items),
+							 new String(items), "Update to Delivered",
 							 "Close Order"};
 			
 			tablePrep[i] = temp;
@@ -219,4 +234,26 @@ public class ViewOrdersPage extends JFrame
 		orderTable.repaint();
 
 	}
+	
+	private void changeStatusActionPerformed(int i){
+		PizzaDeliveryController pdc=new PizzaDeliveryController();
+		pdc.updateOrderStatus(orders.get(i));
+		
+		tableModel.removeRow(i);
+		orderTable.repaint();
+	}
 }
+
+
+class JTableButtonRenderer extends JButton implements TableCellRenderer {
+	public JTableButtonRenderer(){
+		setOpaque(true);
+	}
+    @Override public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    	setText((value == null) ? "" : value.toString());
+    	return this;  
+    }
+} 
+
+
+
