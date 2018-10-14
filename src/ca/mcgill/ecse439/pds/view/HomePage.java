@@ -6,6 +6,7 @@ import java.awt.*;
 import static javax.swing.GroupLayout.Alignment.CENTER;
 
 import ca.mcgill.ecse439.pds.view.MakeOrderPage;
+import ca.mcgill.ecse439.pds.view.ManageMenuPage;
 import ca.mcgill.ecse439.pds.view.ViewOrdersPage;
 
 public class HomePage extends JFrame {
@@ -16,6 +17,7 @@ public class HomePage extends JFrame {
 	private JLabel subTitle;
 	private JButton makeOrderButton;
 	private JButton viewOrdersButton;
+	private JButton manageMenuButton;
 
 	public HomePage() {
 		initComponents();
@@ -45,6 +47,17 @@ public class HomePage extends JFrame {
 				makeOrderButtonActionPerformed();
 			}
 		});
+		
+		// Manage Pizzas Button
+		manageMenuButton = new JButton();
+		manageMenuButton.setForeground(Color.DARK_GRAY);
+		manageMenuButton.setBackground(Color.WHITE);
+		manageMenuButton.setText("Manage Menu");
+		manageMenuButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent event) {
+				manageMenuButtonActionPerformed();
+			}
+		});
 
 		// View Orders Button (admin)
 		viewOrdersButton = new JButton();
@@ -70,6 +83,8 @@ public class HomePage extends JFrame {
 				.addGroup(layout.createSequentialGroup()
 					.addComponent(makeOrderButton)
 					.addGap(20)
+					.addComponent(manageMenuButton)
+					.addGap(20)
 					.addComponent(viewOrdersButton)));
 
 		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] { makeOrderButton, viewOrdersButton });
@@ -82,6 +97,7 @@ public class HomePage extends JFrame {
 				.addGap(30)
 				.addGroup(layout.createParallelGroup()
 					.addComponent(makeOrderButton)
+					.addComponent(manageMenuButton)
 					.addComponent(viewOrdersButton)));
 
 		pack();
@@ -92,6 +108,12 @@ public class HomePage extends JFrame {
 	// Re-route to Order Form
 	private void makeOrderButtonActionPerformed() {
 		new MakeOrderPage().setVisible(true);
+		this.dispose();
+	}
+	
+	// Re-route to Manage the Menu (requires login
+	private void manageMenuButtonActionPerformed() {
+		new ManageMenuPage().setVisible(true);
 		this.dispose();
 	}
 
