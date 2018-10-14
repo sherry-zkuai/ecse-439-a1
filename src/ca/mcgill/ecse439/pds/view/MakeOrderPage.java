@@ -28,7 +28,7 @@ public class MakeOrderPage extends JFrame
 	private static Dimension MENU_DIM =  new Dimension(600, 100); 
 	
 	private List<MenuPizza> menuPizzas = new LinkedList<MenuPizza>();
-	private String[] menuTableColumnNames = {"Name", "Price", "Ingredients",	"Calories", "Order" };
+	private String[] menuTableColumnNames = {"Name", "Price", "Ingredients", "Calories", "Order" };
 	private Object[][] menuTableData = prepTableData();
 	
 	private String error;
@@ -241,11 +241,13 @@ public class MakeOrderPage extends JFrame
 			
 			try
 			{
-				rowOrder = Integer.parseInt(menuTable.getModel().getValueAt(i, 4).toString());
+				rowOrder = (int) menuTable.getModel().getValueAt(i, 4);
+				System.out.println(rowOrder);
 			}
 			catch (Exception e)
 			{
 				error = "Please input a whole number into the order cell.";
+				e.printStackTrace();
 				refreshData();
 				return;
 			}
@@ -288,7 +290,8 @@ public class MakeOrderPage extends JFrame
 				
 		if (PizzaDeliveryManager.getInstance().hasPizzas())
 		{
-			for(Pizza p:PizzaDeliveryManager.getInstance().getPizzas())
+			ArrayList<Pizza> ps=new ArrayList<>(PizzaDeliveryManager.getInstance().getPizzas());
+			for(Pizza p:ps)
 			{
 				if(p instanceof MenuPizza)
 				{

@@ -40,6 +40,8 @@ public class ManageMenuPage extends JFrame
 	private DefaultTableModel tableModel;
 	private JScrollPane pizzaScrollPane;
 	
+	private JButton submitButton;
+	
 	public ManageMenuPage()
 	{
 		initComponents();
@@ -101,6 +103,17 @@ public class ManageMenuPage extends JFrame
 		pizzaTable.getColumnModel().getColumn(4).setCellRenderer( buttonRenderer );
 		pizzaTable.getColumnModel().getColumn(5).setCellRenderer( buttonRenderer );
 		pizzaScrollPane.setPreferredSize(TABLE_DIM);
+		// Submit Button
+				submitButton = new JButton();
+				submitButton.setText("New Pizza");
+				submitButton.setForeground(Color.DARK_GRAY);
+				submitButton.setBackground(Color.WHITE);
+				submitButton.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						tableModel.addRow(new Object[]{"",0,new Ingredient[]{Ingredient.getWithName("Flour")},0,"Save Change","Delete"});
+					}
+				});
+
 		pizzaTable.addMouseListener(new java.awt.event.MouseAdapter()
 		{
 		    @Override
@@ -130,14 +143,16 @@ public class ManageMenuPage extends JFrame
 				layout.createParallelGroup(CENTER)
 					.addComponent(errorMsg)
 					.addComponent(title)
-					.addComponent(pizzaScrollPane));
+					.addComponent(pizzaScrollPane)
+		.addComponent(submitButton));
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				.addComponent(errorMsg)
 				.addGap(20)
 				.addComponent(title)
 				.addGap(30)
-				.addComponent(pizzaScrollPane));
+				.addComponent(pizzaScrollPane)
+				.addComponent(submitButton));
 
 		pack();
 		setLocationRelativeTo(null);
