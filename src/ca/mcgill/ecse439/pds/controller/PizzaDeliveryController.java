@@ -2,6 +2,8 @@ package ca.mcgill.ecse439.pds.controller;
 
 import ca.mcgill.ecse439.pds.persistence.PersistenceXStream;
 
+import java.util.ArrayList;
+
 import ca.mcgill.ecse439.pds.model.CustomPizza;
 import ca.mcgill.ecse439.pds.model.Ingredient;
 import ca.mcgill.ecse439.pds.model.MenuPizza;
@@ -49,16 +51,17 @@ public class PizzaDeliveryController
 		{
 			aOrder.setStatus(OrderStatus.Delivered);
 			
-			for(Pizza p:aOrder.getPizzas())
+			ArrayList<Pizza> ps=new ArrayList<>(aOrder.getPizzas());
+			
+			for(Pizza p:ps)
 			{
 				if (p instanceof CustomPizza)
 				{
 					this.removeCustomPizza((CustomPizza)p);			// Also delete the custom pizza created
 				}
 			}
-			this.removeOrder(aOrder);	// When the status changes to "delivered", the order will be removed
 		}
-		aOrder.setPizzaDeliveryManager(PizzaDeliveryManager.getInstance());
+		this.removeOrder(aOrder);	// When the status changes to "delivered", the order will be removed
 		PersistenceXStream.saveToXMLwithXStream(PizzaDeliveryManager.getInstance());
 	}
 	
@@ -101,7 +104,8 @@ public class PizzaDeliveryController
 	public double getOrderValue(Order aOrder)
 	{	
 		double total = 0;
-		for (int i = 0; i < aOrder.getPizzas().size(); i++)
+		ArrayList<Pizza> ps=new ArrayList<>(aOrder.getPizzas());
+		for (int i = 0; i < ps.size(); i++)
 		{
 			total += aOrder.getPizza(i).getPrice() * aOrder.getNumberOfEachPizza(i);
 		}

@@ -29,29 +29,28 @@ public class PizzaDeliveryPersistence {
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
+				//----Start of adding basic menu items-------
+				PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
+				
+				Ingredient flour = new Ingredient("Flour", 0.0, pdm);
+				Ingredient yeast = new Ingredient("Yeast", 0.0, pdm);
+				Ingredient sauce = new Ingredient("Sauce", 0, pdm);
+				Ingredient cheese = new Ingredient("Cheese", 2, pdm);
+				Ingredient tomato = new Ingredient("Tomato", 2.0, pdm);
+				Ingredient pepperoni = new Ingredient("Pepperoni", 3, pdm);
+				Ingredient basil = new Ingredient("Basil", 1.0, pdm);
+				Ingredient bacon=new Ingredient("Bacon", 3, pdm);
+				
+				MenuPizza marinara = new MenuPizza(9.5, pdm, "Marinara", 1000, flour, yeast, cheese, sauce);
+				MenuPizza pprn = new MenuPizza(11, pdm, "Pepperoni", 1200, flour, yeast, cheese, sauce, pepperoni);
+				MenuPizza neapolitan = new MenuPizza(10, pdm, "Neapolitan", 1100, flour, yeast, sauce, cheese, tomato, basil);
+				MenuPizza carbonara = new MenuPizza(10, pdm, "Carbonara", 1100, flour, yeast, sauce, cheese, tomato, bacon);
+
+				PersistenceXStream.saveToXMLwithXStream(pdm);
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			
-			//----Start of adding basic menu items-------
-			PizzaDeliveryManager pdm = PizzaDeliveryManager.getInstance();
-			
-			Ingredient flour = new Ingredient("Flour", 0.0, pdm);
-			Ingredient yeast = new Ingredient("Yeast", 0.0, pdm);
-			Ingredient sauce = new Ingredient("Sauce", 0, pdm);
-			Ingredient cheese = new Ingredient("Cheese", 2, pdm);
-			Ingredient tomato = new Ingredient("Tomato", 2.0, pdm);
-			Ingredient pepperoni = new Ingredient("Pepperoni", 3, pdm);
-			Ingredient basil = new Ingredient("Basil", 1.0, pdm);
-			Ingredient bacon=new Ingredient("Bacon", 3, pdm);
-			
-			MenuPizza marinara = new MenuPizza(9.5, pdm, "Marinara", 1000, flour, yeast, cheese, sauce);
-			MenuPizza pprn = new MenuPizza(11, pdm, "Pepperoni", 1200, flour, yeast, cheese, sauce, pepperoni);
-			MenuPizza neapolitan = new MenuPizza(10, pdm, "Neapolitan", 1100, flour, yeast, sauce, cheese, tomato, basil);
-			MenuPizza carbonara = new MenuPizza(10, pdm, "Carbonara", 1100, flour, yeast, sauce, cheese, tomato, bacon);
-
-			PersistenceXStream.saveToXMLwithXStream(pdm);
 		}
 	}
 
